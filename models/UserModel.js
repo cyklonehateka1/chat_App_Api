@@ -6,6 +6,14 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    picture: {
+      type: String,
+    },
     email: {
       type: String,
       required: true,
@@ -13,11 +21,26 @@ const UserSchema = mongoose.Schema(
     },
     phone: {
       type: String,
-      unique: true,
     },
     password: {
       type: String,
-      required: true,
+    },
+    twofaActive: {
+      type: Boolean,
+      default: false,
+    },
+    googleId: {
+      type: String,
+    },
+    confirmedEmail: {
+      type: Boolean,
+      default: false,
+    },
+    friends: {
+      type: [mongoose.Schema.Types.ObjectId],
+    },
+    fromGoogle: {
+      type: Boolean,
     },
   },
   { timestamps: true }

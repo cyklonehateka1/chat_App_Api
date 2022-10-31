@@ -10,7 +10,7 @@ export const sendEmail = async (email, subject, text) => {
       secure: false,
       auth: {
         user: process.env.USER,
-        pass: process.env.PASSS,
+        pass: process.env.PASS,
       },
     });
 
@@ -22,6 +22,7 @@ export const sendEmail = async (email, subject, text) => {
     });
     console.log("email sent");
   } catch (error) {
-    return errorHandler(400, "Something happened");
+    console.log(error);
+    return;
   }
 };
