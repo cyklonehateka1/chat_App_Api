@@ -1,5 +1,5 @@
 import axios from "axios";
-const googleOauthService = async (code) => {
+const googleOauthService = async (code, req, next) => {
   const url = "https://oauth2.googleapis.com/token";
 
   const values = {
@@ -19,7 +19,7 @@ const googleOauthService = async (code) => {
     });
     return res.data;
   } catch (error) {
-    return error;
+    return next(error);
   }
 };
 export default googleOauthService;

@@ -102,11 +102,38 @@ export const loginWithGoogle = async (req, res, next) => {
   try {
     const { id_token, access_token } = await googleOauthService(code);
 
-    const gooelDetails = jwt.decode(id_token);
+    const googleDetails = jwt.decode(id_token);
 
-    const user = await UserSchema.findOne({ email: gooelDetails.email });
-    if (user && !user.fromGoogle) {
-      return next();
+    if (!googleDetails.email_verified)
+      return next(
+        errorHandler(403, "Your email account is not verified on google")
+      );
+    const { name, email, picture, email_verified } = googleDetails;
+
+    let user = await UserSchema.findOne({ email });
+
+    //
+
+    if (!user) {
+      user = await new UserSchema({
+        email,
+        name,
+        picture,
+        username: email.split("@")[0],
+        confirmedEmail: email_verified,
+        fromGoogle: true,
+      }).save();
+    } else if (user && !user.fromGoogle) {
+      return next(errorHandler(409, "Already signed in with different method"));
+    } else {
+      user = await UserSchema.findOne({ email });
     }
-  } catch (error) {}
+    const accessToken = jwt.sign(
+      { id: user._id, emailConfirmed: user.confirmedEmail },
+      process.env.JWT_SEC
+    );
+    res.status(200).json(user);
+  } catch (error) {
+    return next(error);
+  }
 };
