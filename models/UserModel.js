@@ -29,9 +29,6 @@ const UserSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    googleId: {
-      type: String,
-    },
     confirmedEmail: {
       type: Boolean,
       default: false,

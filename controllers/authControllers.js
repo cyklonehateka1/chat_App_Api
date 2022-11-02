@@ -1,7 +1,8 @@
 import UserSchema from "../models/UserModel.js";
 import { errorHandler } from "../utils/errorHandler.js";
 import bcrypt from "bcrypt";
-import { sendEmail } from "../utils/sendEmail.js";
+import { sendEmail } from "../service/sendEmail.js";
+import googleOauthService from "../service/googleOauthService.js";
 import jwt from "jsonwebtoken";
 
 export const register = async (req, res, next) => {
@@ -93,4 +94,19 @@ export const login = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
+};
+
+export const loginWithGoogle = async (req, res, next) => {
+  const code = req.query.code;
+
+  try {
+    const { id_token, access_token } = await googleOauthService(code);
+
+    const gooelDetails = jwt.decode(id_token);
+
+    const user = await UserSchema.findOne({ email: gooelDetails.email });
+    if (user && !user.fromGoogle) {
+      return next();
+    }
+  } catch (error) {}
 };
