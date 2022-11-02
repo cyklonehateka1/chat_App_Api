@@ -39,6 +39,12 @@ const UserSchema = mongoose.Schema(
     fromGoogle: {
       type: Boolean,
     },
+    recievedFriendRequests: {
+      type: [mongoose.Schema.Types.ObjectId],
+    },
+    sentFriendRequests: {
+      type: [mongoose.Schema.Types.ObjectId],
+    },
   },
   { timestamps: true }
 );

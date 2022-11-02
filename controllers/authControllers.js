@@ -125,15 +125,20 @@ export const loginWithGoogle = async (req, res, next) => {
       }).save();
     } else if (user && !user.fromGoogle) {
       return next(errorHandler(409, "Already signed in with different method"));
-    } else {
-      user = await UserSchema.findOne({ email });
     }
     const accessToken = jwt.sign(
-      { id: user._id, emailConfirmed: user.confirmedEmail },
+      { id: user._id, confirmedEmail: user.confirmedEmail },
       process.env.JWT_SEC
     );
-    res.status(200).json(user);
+    res.cookie("access_token", accessToken).status(200).json(user);
   } catch (error) {
     return next(error);
   }
+};
+
+export const logout = async (req, res, next) => {
+  res
+    .clearCookie("access_token", { sameSite: "none", secure: true })
+    .status(200)
+    .json("Logged out successfully");
 };

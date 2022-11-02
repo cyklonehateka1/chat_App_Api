@@ -3,19 +3,15 @@ import dotenv from "dotenv";
 import { connection } from "./utils/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: "GET, POST, DELETE, PUT",
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 
