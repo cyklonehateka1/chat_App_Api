@@ -38,6 +38,7 @@ const UserSchema = mongoose.Schema(
     },
     fromGoogle: {
       type: Boolean,
+      default: false,
     },
     recievedFriendRequests: {
       type: [mongoose.Schema.Types.ObjectId],

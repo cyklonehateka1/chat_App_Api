@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { errorHandler } from "../utils/errorHandler";
+import { errorHandler } from "../utils/errorHandler.js";
 
 export const verifyToken = (req, res, next) => {
   const token = req.cookies.access_token;
@@ -14,11 +14,15 @@ export const verifyToken = (req, res, next) => {
 };
 
 export const emailVerified = async (req, res, next) => {
-  verifyToken(req, res, () => {
-    if (!req.user.confirmedEmail)
-      return next(
-        errorHandler(403, "Please verify your email on the login page")
-      );
-  });
-  next();
+  try {
+    verifyToken(req, res, () => {
+      if (!req.user.confirmedEmail)
+        return next(
+          errorHandler(403, "Please verify your email on the login page")
+        );
+    });
+    next();
+  } catch (error) {
+    return next(error);
+  }
 };

@@ -89,8 +89,14 @@ export const login = async (req, res, next) => {
           "A link has been sent to you, click on it to confirm your account"
         );
     }
+
+    const accessToken = jwt.sign(
+      { id: user._id, confirmedEmail: user.confirmedEmail },
+      process.env.JWT_SEC
+    );
+
     const { password, ...otherDetails } = user._doc;
-    res.status(200).json(otherDetails);
+    res.cookie("access_token", accessToken).status(200).json(otherDetails);
   } catch (error) {
     return next(error);
   }
